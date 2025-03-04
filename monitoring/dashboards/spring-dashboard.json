@@ -1,0 +1,19 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Spring Boot Monitoring",
+    "panels": [
+      {
+        "title": "Heap Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+            "legendFormat": "{{instance}}",
+            "refId": "A"
+          }
+        ]
+      }
+    ]
+  }
+}

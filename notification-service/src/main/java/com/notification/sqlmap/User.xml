@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.notification.mapper.UserMapper">
+
+    <insert id="insertUser" parameterType="com.notification.model.User" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO users (name, email, phone, created_at)
+        VALUES (#{name}, #{email}, #{phone}, NOW())
+    </insert>
+
+    <select id="getUserById" parameterType="Long" resultType="com.notification.model.User">
+        SELECT * FROM USER WHERE userId = #{userId}
+    </select>
+
+</mapper>

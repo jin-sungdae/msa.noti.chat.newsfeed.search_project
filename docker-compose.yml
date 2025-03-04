@@ -1,0 +1,144 @@
+version: '3.8'
+
+networks:
+  msa-network:
+    driver: bridge
+
+services:
+  common-lib:
+    build:
+      context: .
+      dockerfile: common-lib/Dockerfile
+    container_name: common-lib
+    networks:
+      - msa-network
+    volumes:
+      - common-maven:/root/.m2
+    command: ["mvn", "clean", "install", "-DskipTests"]
+
+  # Eureka Discovery Server
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      - common-lib
+    networks:
+      - msa-network
+
+  # Spring Cloud Config Server
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    depends_on:
+      - discovery-server
+      - common-lib
+    ports:
+      - "8888:8888"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  # API Gateway
+  gateway-service:
+    build: ./api-gateway
+    container_name: gateway-service
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+    ports:
+      - "8080:8080"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  # Notification Service
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: notification-service
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+    ports:
+      - "8081:8081"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - common-maven:/root/.m2
+
+  # Newsfeed Service
+  newsfeed-service:
+    build:
+      context: .
+      dockerfile: newsfeed-service/Dockerfile
+    container_name: newsfeed-service
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+    ports:
+      - "8082:8082"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - common-maven:/root/.m2
+
+  # Chat Service
+  chat-service:
+    build:
+      context: .
+      dockerfile: chat-service/Dockerfile
+    container_name: chat-service
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+    ports:
+      - "8083:8083"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - common-maven:/root/.m2
+
+  # Search Service
+  search-service:
+    build:
+      context: .
+      dockerfile: search-service/Dockerfile
+    container_name: search-service
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+    ports:
+      - "8084:8084"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - common-maven:/root/.m2
+
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: database
+    networks:
+      - msa-network
+
+volumes:
+  common-maven:
