@@ -2,6 +2,7 @@ package com.notification.controller;
 
 
 import com.common.config.api.apidto.APIDataResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.notification.dto.NotificationRequest;
 import com.notification.service.NotificationService;
 import com.notification.event.NotificationProducer;
@@ -22,7 +23,7 @@ public class NotificationController {
 
     // 알림 생성
     @PostMapping
-    public APIDataResponse<String> sendNotification(@RequestBody NotificationRequest request) {
+    public APIDataResponse<String> sendNotification(@RequestBody NotificationRequest request) throws JsonProcessingException {
 
         notificationService.processNotification(request);
 

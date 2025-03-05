@@ -174,8 +174,8 @@ services:
     networks:
       - msa-network
     volumes:
-      - ./init-scripts/init-mysql.sql:/docker-entrypoint-initdb.d/init-mysql.sql
-      - ./init-scripts/mock-data.sql:/docker-entrypoint-initdb.d/mock-data.sql
+      - ./database/init-scripts/init-mysql.sql:/docker-entrypoint-initdb.d/init-mysql.sql
+      - ./database/init-scripts/mock-data.sql:/docker-entrypoint-initdb.d/mock-data.sql
 
   redis:
     image: redis:6.2
@@ -186,7 +186,7 @@ services:
     networks:
       - msa-network
     volumes:
-      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./database/config/redis.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
 
   elasticsearch:
@@ -201,7 +201,7 @@ services:
     networks:
       - msa-network
     volumes:
-      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./database/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
 volumes:
   common-maven:

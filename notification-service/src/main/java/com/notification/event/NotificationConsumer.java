@@ -32,7 +32,7 @@ public class NotificationConsumer {
             ObjectMapper objectMapper = new ObjectMapper();
             NotificationEvent event = objectMapper.readValue(message, NotificationEvent.class);
 
-            info.log(" kafka 메시지 수신 : {}", event);
+            log.info(" kafka 메시지 수신 : {}", event);
 
             // 알림전송 처리
             boolean isSent = sendNotification(event);
@@ -63,7 +63,7 @@ public class NotificationConsumer {
             case "PUSH":
                 return pushService.sendPushNotification(event.getUserId(), event.getMessage());
             default:
-                log.error("❌ 지원되지 않는 알림 타입: {}", event.getType());
+                log.error("지원되지 않는 알림 타입: {}", event.getType());
                 return false;
         }
     }
