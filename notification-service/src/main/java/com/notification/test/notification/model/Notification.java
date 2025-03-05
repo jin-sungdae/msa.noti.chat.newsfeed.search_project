@@ -1,8 +1,9 @@
-package com.notification.test.notification.dto;
+package com.notification.test.notification.model;
 
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -10,12 +11,16 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Builder
 public class Notification {
-    private Long notificationId;
-    private Long userId;
+    private String notificationId;
+    private String userId;
     private String eventId;
-    private NotificationType type;
+    private NotificationType notificationType;
     private String message;
     private NotificationStatus status;
     private LocalDateTime sentAt;
     private LocalDateTime createdAt;
+
+    private void setId(String id) {
+        this.notificationId = id;
+    }
 }

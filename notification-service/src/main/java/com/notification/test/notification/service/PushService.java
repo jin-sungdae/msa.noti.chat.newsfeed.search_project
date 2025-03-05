@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PushService {
 
-    public boolean sendPushNotification(Long userId, String message) {
+    public boolean sendPushNotification(String userId, String message) {
 
-        return false;
+        return true;
     }
 }

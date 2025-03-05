@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService {
 
-    public boolean sendEmail(Long userId, String message) {
-        return false;
+    public boolean sendEmail(String userId, String message) {
+        return true;
     }
 }
 

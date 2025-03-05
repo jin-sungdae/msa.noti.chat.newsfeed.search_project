@@ -3,7 +3,7 @@ USE notification_db;
 -- 🚀 100만 개 사용자 삽입
 -- ✅ 중복을 방지하면서 100만 개 사용자 삽입
 
-INSERT INTO users (name, email, phone)
+INSERT INTO user (name, email, phone)
 SELECT
     LEFT(MD5(RAND()), 10),  -- 랜덤 10자리 문자열 (이름)
     CONCAT(LEFT(MD5(RAND()), 10), '@example.com'),  -- 랜덤 이메일

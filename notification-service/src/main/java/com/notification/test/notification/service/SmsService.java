@@ -9,7 +9,7 @@ public class SmsService {
 
 
 
-    public boolean sendSms(Long userId, String message) {
-        return false;
+    public boolean sendSms(String userId, String message) {
+        return true;
     }
 }

@@ -1,8 +1,10 @@
 package com.notification.test.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.notification.test.notification.dto.Notification;
-import com.notification.test.notification.dto.NotificationStatus;
+import com.notification.test.notification.dto.NotificationLog;
+import com.notification.test.notification.dto.NotificationMessage;
+import com.notification.test.notification.model.Notification;
+import com.notification.test.notification.model.NotificationStatus;
 import com.notification.test.notification.mapper.NotificationMapper;
 import com.notification.test.notification.service.EmailService;
 import com.notification.test.notification.service.PushService;
@@ -25,27 +27,50 @@ public class NotificationConsumer {
     private final SmsService smsService;
     private final PushService pushService;
 
-    @KafkaListener(topics = "notifications-event", groupId = "notification-group")
+    @KafkaListener(topics = "${kafka.topic.notification}", groupId = "notification-group")
     public void consume(String message) {
 
         try {
             // 메시지 직력화
             ObjectMapper objectMapper = new ObjectMapper();
-            NotificationEvent event = objectMapper.readValue(message, NotificationEvent.class);
+            NotificationMessage event = objectMapper.readValue(message, NotificationMessage.class);
 
             log.info(" kafka 메시지 수신 : {}", event);
 
+            boolean isSent;
+            String errorMessage = null;
+
             // 알림전송 처리
-            boolean isSent = sendNotification(event);
+            try {
+                isSent = sendNotification(event);
+            } catch (Exception e) {
+                isSent = false;
+                errorMessage = e.getMessage();
+            }
+
 
             // 알림 상태 업데이트
-            Notification notification = notificationMapper.findById(event.getNotificationId());
+            Notification notification = notificationMapper.findById(event.getEventId());
 
             if (notification != null) {
                 notification.setStatus(isSent ? NotificationStatus.SENT : NotificationStatus.FAILED);
                 notification.setSentAt(LocalDateTime.now());
-                notificationMapper.insertNotification(notification);
+
+                // 기존 알림 상태 업데이트
+                notificationMapper.updateNotification(notification);
                 log.info("알림 상태 업데이트 : {}", notification);
+
+                // notification_log 에 기록
+                NotificationLog logEntry = NotificationLog
+                        .builder()
+                        .notificationId(notification.getNotificationId())
+                        .notificationStatus(isSent ? NotificationStatus.SENT : NotificationStatus.FAILED)
+                        .retryCount("0")
+                        .errorMessage(errorMessage)
+                        .createdAt(LocalDateTime.now())
+                        .build();
+
+                notificationMapper.insertNotificationLog(logEntry);
             }
 
         } catch (Exception e) {
@@ -55,9 +80,9 @@ public class NotificationConsumer {
         System.out.println("Received notification: " + message);
     }
 
-    private boolean sendNotification(NotificationEvent event) {
+    private boolean sendNotification(NotificationMessage event) {
 
-        switch (event.getType()) {
+        switch (event.getType().toString()) {
             case "EMAIL":
                 return emailService.sendEmail(event.getUserId(), event.getMessage());
             case "SMS":

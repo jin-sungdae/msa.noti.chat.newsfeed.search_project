@@ -87,6 +87,11 @@ CREATE TABLE notification_retry_queue (
 );
 
 
+INSERT INTO notification_templates (type, template_name, content, created_at) VALUES
+                                                                                  ('PUSH', 'welcome_push', '{username}님, 환영합니다! 앱을 즐겨보세요!', NOW()),
+                                                                                  ('SMS', 'order_sms', '{username}님, 주문 {orderNumber}이 완료되었습니다.', NOW()),
+                                                                                  ('EMAIL', 'reset_password_email', '{username}님, 비밀번호를 재설정하려면 여기를 클릭하세요.', NOW());
+
 
 
 

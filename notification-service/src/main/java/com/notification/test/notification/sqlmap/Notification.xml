@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.notification.test.notification.mapper.NotificationMapper">
+
+    <insert id="insertNotification" parameterType="com.notification.test.notification.model.Notification">
+        INSERT INTO notifications (user_id, event_id, message, notification_type, status, sent_at, created_at)
+        VALUES (#{userId}, #{eventId}, #{message}, #{notificationType}, #{status}, NOW(), NOW())
+    </insert>
+
+    <insert id="insertNotificationTemplate" parameterType="com.notification.test.notification.dto.NotificationMessage">
+        INSERT INTO notification_templates (type, template_name, content, created_at)
+        VALUES (#{type}, #{templateName}, #{content}, NOW())
+    </insert>
+
+    <insert id="insertNotificationLog" parameterType="com.notification.test.notification.dto.NotificationLog">
+        INSERT INTO notification_logs (notification_id, event_type, retry_count, error_message, created_at)
+        VALUES (#{notificationId}, #{notificationStatus}, #{retryCount}, #{errorMessage}, #{createdAt})
+    </insert>
+
+
+    <update id="updateNotification" parameterType="com.notification.test.notification.model.Notification">
+        UPDATE notifications
+        SET status = #{status},
+            sent_at = #{sentAt}
+        WHERE event_id = #{eventId}
+    </update>
+
+    <select id="findById" parameterType="String" resultType="com.notification.test.notification.model.Notification">
+            SELECT * FROM notifications WHERE event_id = #{eventId}
+    </select>
+
+
+    <select id="findTemplateByNotification" parameterType="com.notification.test.notification.dto.RequestNotification" resultType="com.notification.test.notification.dto.NotificationTemplate">
+            SELECT * FROM notification_templates WHERE notification_type = #{notificationType}
+    </select>
+
+
+</mapper>

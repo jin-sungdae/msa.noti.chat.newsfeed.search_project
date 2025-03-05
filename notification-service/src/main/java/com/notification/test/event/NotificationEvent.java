@@ -10,8 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificationEvent {
-    private Long notificationId;
-    private Long userId;
+    private String notificationId;
+    private String userId;
     private String message;
     private String type;  // EMAIL, SMS, PUSH
 }
