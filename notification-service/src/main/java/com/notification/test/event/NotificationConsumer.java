@@ -9,11 +9,13 @@ import com.notification.test.notification.service.PushService;
 import com.notification.test.notification.service.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
 
 
 import java.time.LocalDateTime;
 
-//@Component
+@Component
 @Slf4j
 @RequiredArgsConstructor
 public class NotificationConsumer {
@@ -23,7 +25,7 @@ public class NotificationConsumer {
     private final SmsService smsService;
     private final PushService pushService;
 
-//    @KafkaListener(topics = "notifications-event", groupId = "notification-group")
+    @KafkaListener(topics = "notifications-event", groupId = "notification-group")
     public void consume(String message) {
 
         try {
@@ -54,6 +56,7 @@ public class NotificationConsumer {
     }
 
     private boolean sendNotification(NotificationEvent event) {
+
         switch (event.getType()) {
             case "EMAIL":
                 return emailService.sendEmail(event.getUserId(), event.getMessage());

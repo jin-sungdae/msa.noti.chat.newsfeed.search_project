@@ -21,14 +21,10 @@ public class UserService {
 
         try {
             userMapper.insertUser(requestUser);
-
-            System.out.println(requestUser);
-
             return userMapper.getUserById(requestUser.getUserId());
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
-
-        return null;
     }
 }

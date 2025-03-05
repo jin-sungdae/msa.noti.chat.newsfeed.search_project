@@ -1,6 +1,7 @@
 package com.notification.test.user.controller;
 
 
+import com.common.config.api.apidto.APIDataResponse;
 import com.notification.test.user.dto.User;
 import com.notification.test.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +18,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public String insertUser(@RequestBody User requestUser, HttpServletRequest request) {
+    public APIDataResponse<User> insertUser(@RequestBody User requestUser, HttpServletRequest request) {
 
         User user = userService.insertUser(requestUser);
 
-        return "hi";
+        return APIDataResponse.of(user);
     }
 
     // 사용자 알림 설정 변경

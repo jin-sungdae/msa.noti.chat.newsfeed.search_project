@@ -3,7 +3,7 @@ package com.notification.test.event;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-//@Service
+@Service
 public class NotificationProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 

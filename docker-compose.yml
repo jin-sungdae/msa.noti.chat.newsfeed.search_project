@@ -67,7 +67,7 @@ services:
       - discovery-server
       - config-server
       - common-lib
-#      - kafka
+      - kafka
     ports:
       - "8081:8081"
       - "5005:5005"
@@ -75,7 +75,7 @@ services:
       - msa-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-#      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     volumes:
       - common-maven:/root/.m2
