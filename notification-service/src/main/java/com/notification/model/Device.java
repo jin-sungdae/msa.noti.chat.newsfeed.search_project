@@ -11,8 +11,10 @@ import java.time.LocalDateTime;
 @Setter
 @RequiredArgsConstructor
 public class Device {
+
     private Long id;
     private Long userId;
+    private String platform;
     private String deviceToken;
     private LocalDateTime createdAt;
 }

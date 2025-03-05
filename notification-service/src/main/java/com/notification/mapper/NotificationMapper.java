@@ -16,4 +16,6 @@ public interface NotificationMapper {
     Optional<Notification> getNotificationByUserId(Integer usreId);
 
     Optional<Boolean> existsByEventId(String userId);
+
+    Notification findById(Long notificationId);
 }
