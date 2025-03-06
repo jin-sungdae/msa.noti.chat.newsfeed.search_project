@@ -12,6 +12,7 @@
         <module>notification-server</module>
         <module>notification-worker-server</module>
         <module>common-lib</module>
+        <module>user-server</module>
     </modules>
 
     <dependencyManagement>

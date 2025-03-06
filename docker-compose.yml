@@ -57,6 +57,28 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
+
+  # User Server
+  user-server:
+    build:
+      context: .
+      dockerfile: user-server/Dockerfile
+    container_name: user-server
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+      - kafka
+    ports :
+      - "1113:1113"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - common-maven:/root/.m2
+
+    
   # Notification Server
   notification-server:
     build:
