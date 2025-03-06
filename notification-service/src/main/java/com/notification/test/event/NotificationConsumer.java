@@ -28,8 +28,19 @@ public class NotificationConsumer {
     private final PushService pushService;
 
     @KafkaListener(topics = "${kafka.topic.notification}", groupId = "notification-group")
-    public void consume(String message) {
+    public void consumeNewNotifications(String message) {
+        log.info("새로운 알림 처리");
+        processNotification(message);
+    }
 
+    @KafkaListener(topics = "retry-notification-topic", groupId = "notification-group")
+    public void consumeRetryNotifications(String message) {
+        log.info("재시도 알림 처리");
+        processNotification(message);
+    }
+
+
+    private void processNotification(String message) {
         try {
             // 메시지 직력화
             ObjectMapper objectMapper = new ObjectMapper();
@@ -53,8 +64,10 @@ public class NotificationConsumer {
             Notification notification = notificationMapper.findById(event.getEventId());
 
             if (notification != null) {
+
                 notification.setStatus(isSent ? NotificationStatus.SENT : NotificationStatus.FAILED);
                 notification.setSentAt(LocalDateTime.now());
+                notification.setRetryCount(isSent ? notification.getRetryCount() : String.valueOf(Integer.parseInt(notification.getRetryCount()) + 1));
 
                 // 기존 알림 상태 업데이트
                 notificationMapper.updateNotification(notification);
@@ -65,7 +78,7 @@ public class NotificationConsumer {
                         .builder()
                         .notificationId(notification.getNotificationId())
                         .notificationStatus(isSent ? NotificationStatus.SENT : NotificationStatus.FAILED)
-                        .retryCount("0")
+                        .retryCount(notification.getRetryCount())
                         .errorMessage(errorMessage)
                         .createdAt(LocalDateTime.now())
                         .build();
@@ -76,11 +89,10 @@ public class NotificationConsumer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        System.out.println("Received notification: " + message);
     }
 
-    private boolean sendNotification(NotificationMessage event) {
+
+    private boolean sendNotification(NotificationMessage event) throws Exception {
 
         switch (event.getType().toString()) {
             case "EMAIL":
@@ -94,4 +106,5 @@ public class NotificationConsumer {
                 return false;
         }
     }
+
 }

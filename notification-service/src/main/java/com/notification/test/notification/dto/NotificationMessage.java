@@ -2,10 +2,7 @@ package com.notification.test.notification.dto;
 
 
 import com.notification.test.notification.model.NotificationType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -14,6 +11,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Getter
 @Setter
+@Builder
 public class NotificationMessage implements Serializable {
     private String userId;  // 알림을 받을 사용자 ID
     private String eventId;

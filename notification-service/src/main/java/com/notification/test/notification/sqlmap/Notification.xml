@@ -21,7 +21,8 @@
     <update id="updateNotification" parameterType="com.notification.test.notification.model.Notification">
         UPDATE notifications
         SET status = #{status},
-            sent_at = #{sentAt}
+            sent_at = #{sentAt},
+            retry_count = #{retryCount}
         WHERE event_id = #{eventId}
     </update>
 
@@ -32,6 +33,10 @@
 
     <select id="findTemplateByNotification" parameterType="com.notification.test.notification.dto.RequestNotification" resultType="com.notification.test.notification.dto.NotificationTemplate">
             SELECT * FROM notification_templates WHERE notification_type = #{notificationType}
+    </select>
+
+    <select id="findFailedNotifications" resultType="com.notification.test.notification.model.Notification">
+        SELECT * FROM notifications WHERE status = 'FAILED'
     </select>
 
 

@@ -9,7 +9,7 @@ public class SmsService {
 
 
 
-    public boolean sendSms(String userId, String message) {
-        return true;
+    public boolean sendSms(String userId, String message) throws Exception {
+        throw new Exception("error");
     }
 }

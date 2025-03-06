@@ -7,6 +7,8 @@ import com.notification.test.notification.dto.NotificationMessage;
 import com.notification.test.notification.dto.NotificationTemplate;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface NotificationMapper {
     Notification findById(String eventId);
@@ -22,4 +24,5 @@ public interface NotificationMapper {
 
     void updateNotification(Notification notification);
 
+    List<Notification> findFailedNotifications();
 }
