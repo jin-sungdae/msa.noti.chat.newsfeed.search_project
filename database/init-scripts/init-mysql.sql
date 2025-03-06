@@ -39,9 +39,11 @@ CREATE TABLE notifications (
                                event_id VARCHAR(255) UNIQUE NOT NULL, -- 중복 전송 방지
                                message TEXT NOT NULL,
                                notification_type ENUM('EMAIL', 'SMS', 'PUSH') NOT NULL,
-                               status ENUM('PENDING', 'SENT', 'FAILED', 'RETRYING') NOT NULL DEFAULT 'PENDING',
+                               status ENUM('PENDING', 'SENT', 'FAILED', 'RETRYING', 'PERMANENT_FAILED') NOT NULL DEFAULT 'PENDING',
                                sent_at TIMESTAMP NULL,
                                retry_count INT DEFAULT 0,
+                                is_read BOOLEAN DEFAULT FALSE,
+                                read_at TIMESTAMP NULL,
                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

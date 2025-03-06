@@ -57,12 +57,35 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
-  # Notification Service
-  notification-service:
+  # Notification Server
+  notification-server:
     build:
       context: .
-      dockerfile: notification-service/Dockerfile
-    container_name: notification-service
+      dockerfile: notification-server/Dockerfile
+    container_name: notification-server
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+      - kafka
+    ports:
+      - "8181:8181"
+      - "5005:5005"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    volumes:
+      - common-maven:/root/.m2
+
+  # Notification Worker Server
+  notification-worker-server:
+    build:
+      context: .
+      dockerfile: notification-worker-server/Dockerfile
+    container_name: notification-worker-server
     depends_on:
       - discovery-server
       - config-server
@@ -70,7 +93,6 @@ services:
       - kafka
     ports:
       - "8081:8081"
-      - "5005:5005"
     networks:
       - msa-network
     environment:
