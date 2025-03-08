@@ -7,8 +7,8 @@ import com.notification.server.notification.dto.RequestNotification;
 import com.notification.server.notification.mapper.NotificationMapper;
 import com.notification.server.notification.model.Notification;
 import com.notification.server.notification.model.NotificationStatus;
-import com.notification.server.notification.model.NotificationType;
-import com.notification.server.user.dto.UserSettings;
+
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -81,16 +81,16 @@ public class NotificationService {
     }
 
 
-    public boolean shouldSendNotification(UserSettings settings, NotificationType notificationType) {
-        if (settings == null) {
-            log.warn("사용자 설정이 없음. 기본값으로 알림 허용");
-            return true;
-        }
-
-        return switch (notificationType) {
-            case PUSH -> settings.getIsPush().equals("Y") ? true : false;
-            case SMS -> settings.getIsSms().equals("Y") ? true : false;
-            case EMAIL -> settings.getIsEmail().equals("Y") ? true : false;
-        };
-    }
+//    public boolean shouldSendNotification(UserSettings settings, NotificationType notificationType) {
+//        if (settings == null) {
+//            log.warn("사용자 설정이 없음. 기본값으로 알림 허용");
+//            return true;
+//        }
+//
+//        return switch (notificationType) {
+//            case PUSH -> settings.getIsPush().equals("Y") ? true : false;
+//            case SMS -> settings.getIsSms().equals("Y") ? true : false;
+//            case EMAIL -> settings.getIsEmail().equals("Y") ? true : false;
+//        };
+//    }
 }

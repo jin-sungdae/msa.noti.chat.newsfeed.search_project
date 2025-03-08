@@ -1,7 +1,7 @@
 package com.user.server.user.controller;
 
 //import com.common.config.api.apidto.APIDataResponse;
-import com.user.server.user.dto.User;
+import com.user.server.user.model.User;
 import com.user.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,14 +15,13 @@ public class UserApiController {
     private final UserService userService;
 
 
-//    @PostMapping("")
-//    public APIDataResponse<String> createUser(@RequestBody User user) {
-//
-//
-//        userService.createUser(user);
-//
-//        return APIDataResponse.of(Boolean.toString(true));
-//    }
+    @PostMapping("")
+    public String createUser(@RequestBody User user) {
+
+
+        userService.createUser(user);
+        return "good";
+    }
 //
 //
 //    @PutMapping("")

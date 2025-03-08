@@ -1,26 +1,42 @@
 -- ✅ 데이터베이스 생성
+CREATE DATABASE IF NOT EXISTS user_db;
 CREATE DATABASE IF NOT EXISTS notification_db;
 CREATE DATABASE IF NOT EXISTS chat_db;
 CREATE DATABASE IF NOT EXISTS newsfeed_db;
 CREATE DATABASE IF NOT EXISTS search_db;
 
 -- 계정이 모든 DB에 접근 가능하도록 설정
+GRANT ALL PRIVILEGES ON user_db.* TO 'sjin'@'%';
 GRANT ALL PRIVILEGES ON notification_db.* TO 'sjin'@'%';
 GRANT ALL PRIVILEGES ON chat_db.* TO 'sjin'@'%';
 GRANT ALL PRIVILEGES ON newsfeed_db.* TO 'sjin'@'%';
 GRANT ALL PRIVILEGES ON search_db.* TO 'sjin'@'%';
 FLUSH PRIVILEGES;
 
-USE notification_db;
+
+USE user_db;
+
 
 -- 사용자 테이블
 CREATE TABLE user (
-                       id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                       user_index BIGINT PRIMARY KEY AUTO_INCREMENT,
                        name VARCHAR(255) NOT NULL,
+                       user_id VARCHAR(255) NOT NULL,
+                       password VARCHAR(255) NOT NULL,
+                       birth VARCHAR(255) NOT NULL,
                        email VARCHAR(255) UNIQUE,
-                       phone VARCHAR(20) UNIQUE,
+                       phoneNumber VARCHAR(20) UNIQUE,
+                       address VARCHAR(255) NOT NULL,
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE user_detail (
+        user_detail_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+        user_index BIGINT NOT NULL,
+        user_type ENUM('PLAYER', 'AUTO', 'AI') NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+
 
 -- 사용자 디바이스 테이블 (푸시 알림 발송용)
 CREATE TABLE device (
@@ -31,6 +47,12 @@ CREATE TABLE device (
                          last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+USE notification_db;
+
+
 
 -- 알림 테이블 (알림 기본 정보 저장)
 CREATE TABLE notifications (
