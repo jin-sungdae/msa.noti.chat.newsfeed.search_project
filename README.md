@@ -78,15 +78,6 @@ CREATE TABLE users (
 ```
 
 ### 2️⃣ **Devices 테이블** (사용자의 기기 정보 저장)
-```sql
-CREATE TABLE devices (
-   id BIGINT PRIMARY KEY AUTO_INCREMENT,
-   user_id BIGINT NOT NULL,
-   device_token VARCHAR(512) NOT NULL,
-   platform ENUM('iOS', 'Android') NOT NULL,
-   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
 ```
 
 ### 3️⃣ **Notifications 테이블** (알림 정보 저장)
