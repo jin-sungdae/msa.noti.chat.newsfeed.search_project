@@ -1,0 +1,235 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <%@ include file="/WEB-INF/views/common/inc/PageHeaderINC.jsp" %>
+</head>
+
+<body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed toolbar-tablet-and-mobile-fixed aside-enabled aside-fixed" style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css"/>
+<div class="d-flex flex-column flex-root">
+    <div class="page d-flex flex-row flex-column-fluid">
+        <%@ include file="/WEB-INF/views/common/inc/BodyAsideINC.jsp" %>
+        <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
+            <%@ include file="/WEB-INF/views/common/inc/BodyHeaderINC.jsp" %>
+            <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+                <%@ include file="/WEB-INF/views/common/inc/ToolbarINC.jsp" %>
+
+                <div id="kt_content_container" class="container-fluid">
+                    <div class="card mb-7">
+                        <form class="form">
+                            <div class="card-body">
+
+                                <div class="row g-8">
+                                    <div class="col-xxl-3 fv-row">
+                                        <label class="fs-6 form-label fw-bolderer text-dark">기간</label>
+                                        <div class="row fv-row fv-plugins-icon-container">
+                                            <div class="col-6">
+                                                <div class="input-group">
+                                                    <input
+                                                            id="startDate"
+                                                            name="startDate"
+                                                            type="text"
+                                                            class="form-control flatpickr-input"
+                                                            placeholder="시작일"
+                                                            autocomplete="off"
+                                                            value="<c:out value="${search.startDate}"/>"
+                                                    />
+                                                    <span class="input-group-text" id="basic-addon3">
+                                                    <i class="bi bi-calendar-check fs-1"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group">
+                                                    <input
+                                                            id="endDate"
+                                                            name="endDate"
+                                                            type="text"
+                                                            class="form-control flatpickr-input"
+                                                            placeholder="종료일"
+                                                            autocomplete="off"
+                                                            value="<c:out value="${search.endDate}"/>"
+                                                    />
+                                                    <span class="input-group-text" id="basic-addon3">
+                                                    <i class="bi bi-calendar-check fs-1"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-9">
+                                        <div class="row g-8">
+                                            <div class="col-lg-12">
+                                                <label class="fs-6 form-label fw-bolder text-dark">검색어</label>
+                                                <input
+                                                        type="text"
+                                                        id="search"
+                                                        name="searchValue"
+                                                        class="form-control"
+                                                        placeholder="검색어 입력"
+                                                        maxlength="100"
+                                                        value="<c:out value="${search.searchValue}"/>"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                                    <div>
+                                        <a href="/book-trigger/lecture-request" class="btn btn-secondary" style="color: #181c32; background-color : #fff3cd">
+                                            <i class="fas bi-arrow-repeat fs-2 me-2"></i>
+                                            초기화
+                                        </a>
+                                           <button type="submit" class="btn btn-m btn-warning" style="background-color: #ffcd39; color: #181C32">
+                                            검색
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header border-0 pt-6L">
+                   <%@ include file="/WEB-INF/views/common/SelectPaging.jsp" %>
+                        </div>
+
+                        <div class="card-body pt-0 table-responsive">
+                            <!--begin::Table-->
+                            <table class="table table-row-bordered gy-5" id="faqCommonTable">
+                                <!--begin::Table head-->
+                                <thead>
+                                <!--begin::Table row-->
+                                <tr class="fw-semibolder fs-6 text-gray-800 border-bottom border-gray-200">
+                                    <th class="min-w-70px">No.</th>
+                                    <th class="min-w-70px">희망작가</th>
+                                    <th class="min-w-70px">강연주제</th>
+                                    <th class="min-w-70px">신청자</th>
+                                    <th class="min-w-60px">신청일시</th>
+                                </tr>
+                                <!--end::Table row-->
+                                </thead>
+                                <!--end::Table head-->
+                                <!--begin::Table body-->
+                                <tbody>
+                                <c:if test="${not empty lectureRequestList}">
+                                    <c:forEach items="${lectureRequestList}" var="list" varStatus="status">
+                                        <tr>
+                                            <td class="text-dark fw-bolder">
+                                                    ${((listNum - (page.pageListSize * (page.currentPage - 1))) - status.index)}
+                                            </td>
+                                            <td class="text-dark fw-normal cursor-default">
+                                                <c:out value="${list.hopeWriter}"/>
+                                            </td>
+                                            <td class="text-dark text-hover-warning fw-bolder hoverable" data-uid="${list.uid}" onclick="openLectureRequestForm(this)">
+                                                <c:out value="${list.lectureTheme}"/>
+                                            </td>
+                                            <td class="text-dark fw-normal cursor-default">
+                                                <c:out value="${list.applicantName}"/>
+                                            </td>
+                                            <td class="text-dark fw-normal cursor-default">
+                                                <c:out value="${list.regDate}"/>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:if>
+                                <c:if test="${empty lectureRequestList}">
+                                    <tr>
+                                        <td class="center">
+                                            데이터가 없습니다.
+                                        </td>
+                                    </tr>
+                                </c:if>
+                                </tbody>
+                                <!--end::Table body-->
+                            </table>
+                            <%@ include file="/WEB-INF/views/common/inc/Paging.jsp" %>
+                            <!--end::Table-->
+                        </div>
+                    </div>
+                </div>
+                <%--                    </div>--%>
+            </div>
+            <%@ include file="/WEB-INF/views/common/inc/FooterINC.jsp" %>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalLayout" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-900px" id="modalContent">
+
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
+<script src="/assets/js/flatpickr/flatpickrInitial.js"></script>
+<script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initializeFlatpickr(false);
+    })
+
+
+    function openLectureRequestForm(element) {
+        const uid = element.getAttribute('data-uid');
+        const url = '/book-trigger/lecture-request/' + uid;
+        window.location.href = url;
+    }
+
+    function fetchUserList(page) {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const search = document.getElementById('search').value;
+
+        let queryParams = '?perPage=' + document.getElementById('perPage').value;
+
+        if (startDate != null || startDate !== undefined) {
+            queryParams += '&startDate=' + startDate;
+        }
+
+        if (endDate != null || endDate !== undefined) {
+            queryParams += '&endDate=' + endDate;
+        }
+
+        if (search != null || search !== undefined) {
+            queryParams += '&search=' + search;
+        }
+
+        location.href = '/book-trigger/lecture-request' + queryParams;
+    }
+
+
+    function changePage(page) {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const search = document.getElementById('search').value;
+
+        let queryParams = '?page=' + page + '&perPage=' + document.getElementById('perPage').value;
+
+        if (startDate != null || startDate !== undefined) {
+            queryParams += '&startDate=' + startDate;
+        }
+
+        if (endDate != null || endDate !== undefined) {
+            queryParams += '&endDate=' + endDate;
+        }
+
+        if (search != null || search !== undefined) {
+            queryParams += '&search=' + search;
+        }
+
+        location.href = '/book-trigger/lecture-request' + queryParams;
+    }
+</script>
+
+</body>
+</html>

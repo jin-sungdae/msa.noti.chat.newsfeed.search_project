@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  newsfeed-service:
+    build: .
+    container_name: newsfeed-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-newsfeed
+    restart: always
+    environment:
+      MYSQL_DATABASE: newsfeed_db
+      MYSQL_ROOT_PASSWORD: 5131
+    ports:
+      - "3306:3306"

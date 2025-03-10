@@ -1,0 +1,37 @@
+/* 에디터 아이콘 색상 설정 */
+.fr-toolbar .fr-command.fr-btn i, .fr-popup .fr-command.fr-btn i {
+    color: #222;
+}
+.draggable-handle {
+    cursor:pointer;
+}
+
+/*검색 타이틀 대쉬 설정*/
+.search-title-dash {
+    color: #009EF7;
+    font-weight: bold;
+    margin-right: 3px;
+}
+
+.btn-box {background-color: #F5F8FA; padding: 10px;}
+.custom-btn {margin: 3px; border-radius: 12px; cursor: auto !important; display: inline-flex; align-items: center}
+.custom-btn[disabled]{border: 1px solid gray; background-color: #F5F8FA; color: #666666;}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.custom-select-box {
+    background-color: white !important;
+    border: 1px solid rgb(228, 230, 239) !important;
+
+}
+.input-error-msg {
+    color: #e74c3c; /* 에러 메시지 색상 */
+    font-size: 1rem; /* 에러 메시지 폰트 크기 */
+    margin-top: 0.25rem; /* 입력 필드와의 간격 */
+    font-weight: bold; /* 글자를 더 굵게 */
+    text-shadow: 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.1); /* 약간의 그림자를 추가하여 선명하게 */
+    text-align: left; /* 좌측 정렬 */
+}

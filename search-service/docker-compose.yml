@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  search-service:
+    build: .
+    container_name: search-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - mysql
+      - elasticsearch
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-search
+    restart: always
+    environment:
+      MYSQL_DATABASE: search_db
+      MYSQL_ROOT_PASSWORD: 5131
+    ports:
+      - "3306:3306"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.3
+    container_name: elasticsearch-search
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=changeme
+    ports:
+      - "9200:9200"

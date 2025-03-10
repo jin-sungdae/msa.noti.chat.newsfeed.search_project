@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  chat-service:
+    build: .
+    container_name: chat-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-chat
+    restart: always
+    environment:
+      MYSQL_DATABASE: chat_db
+      MYSQL_ROOT_PASSWORD: 5131
+    ports:
+      - "3306:3306"
