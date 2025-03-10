@@ -30,8 +30,10 @@ public class NotificationConsumer {
     @KafkaListener(topics = "${kafka.topic.notification}", groupId = "notification-group")
     public void consumeNewNotifications(String message) {
         log.info("새로운 알림 처리");
-        processNotification(message);
+        throw new RuntimeException("강제 오류 발생! Kafka 메시지 처리 실패");
+//        processNotification(message);
     }
+
 
     @KafkaListener(topics = "retry-notification-topic", groupId = "notification-group")
     public void consumeRetryNotifications(String message) {

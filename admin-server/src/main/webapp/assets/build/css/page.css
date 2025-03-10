@@ -1,0 +1,4 @@
+.base-pagination .page-link--transparent.disabled {
+    opacity: 0;
+    pointer-events: none;
+}

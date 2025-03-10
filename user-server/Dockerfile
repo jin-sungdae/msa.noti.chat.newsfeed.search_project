@@ -42,12 +42,12 @@ RUN sed -i '/<\/web-app>/i \
 # WAR 파일 복사
 COPY --from=user-builder /app/User/target/user-server-0.0.1-SNAPSHOT.war webapps/ROOT.war
 
-# 🛠️ WAR 파일 압축 해제
+# WAR 파일 압축 해제
 RUN mkdir -p /usr/local/tomcat/webapps/ROOT && \
     unzip webapps/ROOT.war -d webapps/ROOT && \
     rm -f webapps/ROOT.war
 
-# 📂 lib-provided에서 lib으로 파일 이동 (WAR 압축 해제 후 실행)
+# lib-provided에서 lib으로 파일 이동 (WAR 압축 해제 후 실행)
 RUN if [ -d "/usr/local/tomcat/webapps/ROOT/WEB-INF/lib-provided" ]; then \
         cp -r /usr/local/tomcat/webapps/ROOT/WEB-INF/lib-provided/* /usr/local/tomcat/webapps/ROOT/WEB-INF/lib/; \
     fi

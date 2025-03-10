@@ -77,7 +77,28 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     volumes:
       - common-maven:/root/.m2
-      - ./user-server/src/main/webapp:/usr/local/tomcat/webapps/ROOT
+      # - ./user-server/src/main/webapp:/usr/local/tomcat/webapps/ROOT
+
+  # Admin Server
+  admin-server:
+    build:
+      context: .
+      dockerfile: admin-server/Dockerfile
+    container_name: admin-server
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+      - kafka
+    ports :
+      - "1114:1114"
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - common-maven:/root/.m2
+      # - ./admin-server/src/main/webapp:/usr/local/tomcat/webapps/ROOT
 
     
   # Notification Server
@@ -103,19 +124,43 @@ services:
     volumes:
       - common-maven:/root/.m2
 
-  # Notification Worker Server
-  notification-worker-server:
+  # Notification Worker Server 1
+  notification-worker-server-1:
     build:
       context: .
       dockerfile: notification-worker-server/Dockerfile
-    container_name: notification-worker-server
+    container_name: notification-worker-server-1
     depends_on:
       - discovery-server
       - config-server
       - common-lib
       - kafka
     ports:
-      - "8081:8081"
+      - "8281:8081"
+    restart: always
+    networks:
+      - msa-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    volumes:
+      - common-maven:/root/.m2
+    
+  # Notification Worker Server 2
+  notification-worker-server-2:
+    build:
+      context: .
+      dockerfile: notification-worker-server/Dockerfile
+    container_name: notification-worker-server-2
+    depends_on:
+      - discovery-server
+      - config-server
+      - common-lib
+      - kafka
+    ports:
+      - "8382:8081"
+    restart: always
     networks:
       - msa-network
     environment:
@@ -222,7 +267,7 @@ services:
     networks:
       - msa-network
     volumes:
-      - ./database/init-scripts/init-mysql.sql:/docker-entrypoint-initdb.d/init-mysql.sql
+      # - ./database/init-scripts/init-mysql.sql:/docker-entrypoint-initdb.d/init-mysql.sql
       - ./database/init-scripts/mock-data.sql:/docker-entrypoint-initdb.d/mock-data.sql
 
   redis:

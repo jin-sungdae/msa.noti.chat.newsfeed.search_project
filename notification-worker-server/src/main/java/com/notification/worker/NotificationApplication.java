@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 		"classpath:datasource.properties"
 })
 @SpringBootApplication
+@EnableScheduling
 public class NotificationApplication {
 
 	public static void main(String[] args) {
