@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ConsumerGroupDescription;
+import org.apache.kafka.clients.admin.DescribeConsumerGroupsResult;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,10 +32,12 @@ public class KafkaMonitoringService {
     @Scheduled(fixedRate = 60000)
     public void checkConsumerLag() {
         try {
+
             Map<String, ConsumerGroupDescription> consumerGroups = kafkaAdminClient
                     .describeConsumerGroups(List.of("notification-group"))
                     .all()
                     .get();
+
 
             for (ConsumerGroupDescription group : consumerGroups.values()) {
                 log.info("Kafka Consumer Group: {} | 상태: {}", group.groupId(), group.state());
@@ -67,7 +71,7 @@ public class KafkaMonitoringService {
         }
     }
 
-    private long getLatestOffset(TopicPartition partition) {
+    protected long getLatestOffset(TopicPartition partition) {
         try (KafkaConsumer<String, String> consumer = createKafkaConsumer()) {
             Map<TopicPartition, Long> endOffsets = consumer.endOffsets(List.of(partition));
             return endOffsets.getOrDefault(partition, -1L);
@@ -89,4 +93,5 @@ public class KafkaMonitoringService {
         redisTemplate.opsForValue().set(errorKey, errorMessage, 1, TimeUnit.HOURS);
         log.warn("Kafka 오류 저장: {}", errorMessage);
     }
+
 }

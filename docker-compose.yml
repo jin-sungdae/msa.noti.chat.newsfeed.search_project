@@ -267,7 +267,7 @@ services:
     networks:
       - msa-network
     volumes:
-      # - ./database/init-scripts/init-mysql.sql:/docker-entrypoint-initdb.d/init-mysql.sql
+      - ./database/init-scripts/init-mysql.sql:/docker-entrypoint-initdb.d/init-mysql.sql
       - ./database/init-scripts/mock-data.sql:/docker-entrypoint-initdb.d/mock-data.sql
 
   redis:
