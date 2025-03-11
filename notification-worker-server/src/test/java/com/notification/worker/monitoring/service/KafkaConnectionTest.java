@@ -86,8 +86,8 @@ public class KafkaConnectionTest {
         }
 
         File file = new File("src/test/resources/application.properties");
-        System.out.println("🚀 파일 존재 여부: " + file.exists());
-        System.out.println("🚀 절대 경로: " + file.getAbsolutePath());
+        System.out.println("파일 존재 여부: " + file.exists());
+        System.out.println("절대 경로: " + file.getAbsolutePath());
     }
 
 
