@@ -29,16 +29,13 @@ public class NotificationConsumer {
     private final PushService pushService;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @KafkaListener(topics = "notification-topic", groupId = "notification-group")
+    @KafkaListener(topics = "notification-topic", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeNewNotifications(String message) {
-        try {
+
             log.info("새로운 알림 처리");
-            throw new RuntimeException("강제 오류 발생! Kafka 메시지 처리 실패");
-//        processNotification(message);
-        } catch (Exception e) {
-            // 에러 메시지 발생시 error-topic으로 메시지 전송
-            kafkaTemplate.send("error-topic", message);
-        }
+
+        processNotification(message);
+
 
     }
 

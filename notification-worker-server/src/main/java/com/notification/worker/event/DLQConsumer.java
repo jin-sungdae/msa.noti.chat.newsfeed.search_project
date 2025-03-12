@@ -24,6 +24,7 @@ public class DLQConsumer {
         log.warn("DLQ로 이동하는 메시지: {}", failedMessage);
         kafkaTemplate.send("notification-dlq", failedMessage);
     }
+
     @KafkaListener(topics = "notification-dlq", groupId = "dlq-consumer-group")
     public void receiveFromDLQ(String message) {
         log.info("DLQ에서 메시지 수신: {}", message);

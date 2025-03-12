@@ -29,7 +29,7 @@ public class KafkaMonitoringService {
     private final AdminClient kafkaAdminClient;
     private final RedisTemplate<String, String> redisTemplate;
 
-    @Scheduled(fixedRate = 60000)
+//    @Scheduled(fixedRate = 60000)
     public void checkConsumerLag() {
         try {
 

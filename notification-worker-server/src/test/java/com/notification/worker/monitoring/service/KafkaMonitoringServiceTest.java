@@ -17,6 +17,7 @@ import org.apache.kafka.common.Node;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.internals.KafkaFutureImpl;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest(    properties = {
         "spring.kafka.bootstrap-servers=localhost:9092" // Docker Kafka 사용
 })
-
 @Import(TestKafkaConfig.class)
 class KafkaMonitoringServiceTest {
 
@@ -79,6 +79,7 @@ class KafkaMonitoringServiceTest {
 
 
     @Test
+    @DisplayName("consumerLag 정상동작 확인")
     void checkConsumerLag_정상동작() throws Exception {
         // Given
         ConsumerGroupDescription mockGroupDescription = mock(ConsumerGroupDescription.class);
@@ -98,40 +99,9 @@ class KafkaMonitoringServiceTest {
     }
 
 
-    public static DescribeConsumerGroupsResult createDescribeConsumerGroupsResult() {
-        // MemberAssignment을 직접 생성
-        MemberAssignment memberAssignment = new MemberAssignment(Set.of(new TopicPartition("notification-topic", 0)));
-
-        // MemberDescription 객체 생성
-        MemberDescription member = new MemberDescription(
-                "consumer-1",
-                "consumer-instance-1",
-                "/192.168.1.10",
-                memberAssignment
-        );
-
-        // ConsumerGroupDescription 객체 생성
-        ConsumerGroupDescription groupDescription = new ConsumerGroupDescription(
-                "notification-group",
-                false,
-                List.of(member),
-                "range",
-                ConsumerGroupState.STABLE,
-                new Node(1, "kafka-broker-1", 9092)
-        );
-
-        // KafkaFuture에 값 설정
-        KafkaFutureImpl<ConsumerGroupDescription> future = new KafkaFutureImpl<>();
-        future.complete(groupDescription);
-
-        // Map<String, KafkaFuture<ConsumerGroupDescription>> 생성
-        Map<String, KafkaFuture<ConsumerGroupDescription>> futureMap = new HashMap<>();
-        futureMap.put("notification-group", future);
-
-        return new DescribeConsumerGroupsResult(futureMap);
-    }
 
     @Test
+    @DisplayName("kafka 오류 메시지 redis에 저장 잘 되는지 확인")
     void testCheckConsumerLag_WhenLagExists_ShouldSaveErrorToRedis() {
         MockitoAnnotations.openMocks(this);
         kafkaMonitoringService = new KafkaMonitoringService(kafkaAdminClient, redisTemplate);
@@ -204,50 +174,8 @@ class KafkaMonitoringServiceTest {
                 .set(startsWith("kafka_error:"), contains("Kafka Consumer Lag 감지됨"), eq(1L), eq(TimeUnit.HOURS));
     }
 
-    @Test
-    void testConsumeNewNotifications_whenErrorOccurred_shouldSaveErrorToRedis() throws Exception {
-        kafkaMonitoringService = new KafkaMonitoringService(kafkaAdminClient, redisTemplate);
-        KafkaMonitoringService spyService = spy(kafkaMonitoringService);
-        doReturn(20L).when(spyService).getLatestOffset(any(TopicPartition.class));
-
-        kafkaMonitoringService = spyService;
-        // Given
-        String testMessage = "test message with error";
-
-        // When
-        try {
-            // Simulating an error in Kafka Listener
-            notificationConsumer.consumeNewNotifications(testMessage); // This would throw error in real case
-        } catch (RuntimeException e) {
-            // Verifying Redis for error message
-            verify(redisTemplate, times(1))
-                    .opsForValue()
-                    .set(eq("kafka_error:" + System.currentTimeMillis()), eq("Kafka Consumer 상태 조회 실패: 강제 오류 발생! Kafka 메시지 처리 실패"), eq(1L), eq(TimeUnit.HOURS));
-        }
-
-        // Then - check the actual consumer lag error in Kafka
-        Map<String, ConsumerGroupDescription> consumerGroups = kafkaAdminClient.describeConsumerGroups(List.of("notification-group")).all().get();
-        verify(kafkaAdminClient, times(1)).describeConsumerGroups(List.of("notification-group"));
-    }
 
 
-    @Test
-    void testMessageGoesToDLQOnFailure() {
-        Properties consumerProps = new Properties();
-        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092"); // Docker Kafka 브로커 주소
-        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, "dlq-test-group");
-        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-
-
-
-        String testMessage = "This message should go to DLQ";
-        kafkaTemplate.send(MAIN_TOPIC, testMessage);
-
-
-
-    }
 
     // KafkaFuture 변환 유틸리티
     private <T> org.apache.kafka.common.KafkaFuture<T> toKafkaFuture(T value) {
