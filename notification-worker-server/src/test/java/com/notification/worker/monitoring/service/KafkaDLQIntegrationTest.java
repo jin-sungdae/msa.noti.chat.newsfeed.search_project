@@ -3,10 +3,6 @@ package com.notification.worker.monitoring.service;
 
 import com.notification.worker.event.DLQConsumer;
 import com.notification.worker.event.NotificationConsumer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,9 +12,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +20,7 @@ import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class KafkaDLQIntegratiohnTest {
+public class KafkaDLQIntegrationTest {
 
 
     @Autowired
